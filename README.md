@@ -15,7 +15,7 @@
 1. dll.h (DLL 介面定義)
 
 控制函式是匯出 (dllexport) 還是匯入 (dllimport)。
-C
+```C
 
 #ifndef _DLL_H_
 #define _DLL_H_
@@ -32,6 +32,8 @@ DLLIMPORT void HelloWorld();
 #endif
 
 
+
+```
 
 2. dll.c (DLL 實作與 DllMain)
 
