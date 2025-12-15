@@ -1,29 +1,27 @@
-🚀 devc-simple-msgbox-dll-example
+📚 devc-windows-dll-example
 
-一個使用 Dev-C++ 創建的簡單 Windows DLL 及其動態載入（Run-time Dynamic Linking）的完整教學範例。
+這個專案提供了一個使用 Dev-C++ (MinGW/GCC) 編譯的簡單 Windows DLL 及其在主程式中動態載入與調用的完整範例。
 ✨ 專案簡介 (Project Overview)
 
-這個專案提供了一個功能極簡的 DLL，其唯一作用是彈出一個 "Hello World" 的訊息框（MessageBox）。它作為一個基礎模板，展示了 Windows DLL 開發中的三個核心組件：
+本專案旨在展示 Windows DLL 開發的兩個核心環節：
 
-    DLL 介面 (dll.h): 定義了匯入和匯出函式的巨集。
+    DLL 建立與匯出 (Export)：如何使用 __declspec(dllexport) 將 HelloWorld() 函式封裝在 Project1.dll 中。
 
-    DLL 實作 (dll.c): 包含實際的函式邏輯（HelloWorld）和 DLL 的生命週期管理（DllMain）。
+    主程式動態載入 (Dynamic Loading)：主程式如何使用 Windows API 函式 (LoadLibrary、GetProcAddress、FreeLibrary) 在執行時調用 DLL 內的功能。
 
-    主程式 (main.c): 示範如何使用 Windows API 中的 LoadLibrary、GetProcAddress 和 FreeLibrary 函式，動態載入並呼叫 DLL 裡的功能。
-
-⚙️ 程式碼與結構 (Code Structure)
+⚙️ 檔案與程式碼 (Files and Code)
 1. 介面定義：dll.h
 
-定義了 DLLIMPORT 巨集，用來處理編譯 DLL 本身時的 dllexport 和編譯主程式時的 dllimport。
+定義了函式的匯入/匯出機制，確保在編譯 DLL 本身時使用 dllexport，而在編譯主程式時使用 dllimport。
 C
 
 #ifndef _DLL_H_
 #define _DLL_H_
 
 #if BUILDING_DLL
-#define DLLIMPORT __declspec(dllexport) // 編譯 DLL 時：匯出
+#define DLLIMPORT __declspec(dllexport)
 #else
-#define DLLIMPORT __declspec(dllimport) // 使用 DLL 時：匯入
+#define DLLIMPORT __declspec(dllimport)
 #endif
 
 // 定義要匯出的函式原型
@@ -33,38 +31,28 @@ DLLIMPORT void HelloWorld();
 
 2. DLL 實作：dll.c
 
-包含 HelloWorld 函式實作（彈出 MessageBox）和 DLL 必要的進入點 DllMain。
+包含 DLL 的主要功能 (HelloWorld)，它會彈出一個 Windows 訊息框 (MessageBox)。
 C
 
-/* Replace "dll.h" with the name of your header */
 #include "dll.h"
 #include <windows.h>
 
-// 匯出函式的實作：彈出一個訊息框
 DLLIMPORT void HelloWorld()
 {
+    // 呼叫 Windows API 彈出訊息框
     MessageBox(0,"Hello World from DLL!\n","Hi",MB_ICONINFORMATION);
 }
 
-// DLL 進入點：處理 DLL 載入、卸載等系統事件
+// DllMain 是 DLL 的進入點，處理載入/卸載事件
 BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved)
 {
-    switch(fdwReason)
-    {
-        case DLL_PROCESS_ATTACH:
-        case DLL_PROCESS_DETACH:
-        case DLL_THREAD_ATTACH:
-        case DLL_THREAD_DETACH:
-            break;
-    }
-    
-    /* Return TRUE on success, FALSE on failure */
+    // ... 處理各種 DLL 事件（省略細節）
     return TRUE;
 }
 
 3. 主程式：main.c
 
-展示了如何使用 Windows API 進行動態載入：
+展示了主程式如何動態載入 Project1.dll 並透過指標調用 HelloWorld 函式。
 C
 
 #include <stdio.h>
@@ -78,14 +66,14 @@ int main()
     HMODULE hDLL;
     HelloWorld_func helloWorld;
     
-    /* 1. 載入 DLL (DLL 檔名為 "Project1.dll") */
+    /* 1. 載入 DLL */
     hDLL = LoadLibrary("Project1.dll"); 
 
     if (hDLL != NULL)
     {
         printf("DLL loaded successfully.\n");
 
-        /* 2. 獲取函式指標 (必須使用 DLL 中匯出的名稱 "HelloWorld") */
+        /* 2. 獲取函式指標 */
         helloWorld = (HelloWorld_func)GetProcAddress(hDLL, "HelloWorld");
 
         if (helloWorld != NULL)
@@ -107,7 +95,6 @@ int main()
     else
     {
         printf("Error: Could not load DLL (Project1.dll).\n");
-        // 建議使用 GetLastError() 來獲取更詳細的錯誤資訊
     }
 
     printf("Press Enter to exit.\n");
@@ -115,43 +102,49 @@ int main()
     return 0;
 }
 
-🛠️ 編譯與運行步驟 (Compilation & Running)
-前置條件
+🛠️ 編譯與運行步驟 (How to Build & Run)
+預備工作
 
-    Dev-C++ 或任何支援 MinGW/GCC 的 Windows 開發環境。
+    環境: Dev-C++ (MinGW/GCC)
 
-步驟
+    您需要將 dll.c 和 dll.h 編譯為一個 DLL 專案，然後將 main.c 編譯為一個 Console Application 專案。
 
-    編譯 DLL:
+步驟 1: 編譯 DLL
 
-        在 Dev-C++ 中，創建一個 DLL 專案。
+    在 Dev-C++ 中建立一個新的 Windows DLL 專案。
 
-        將 dll.c 和 dll.h 加入專案中，並編譯產生 Project1.dll (此名稱假設來自 Dev-C++ 預設專案設定)。
+    將 dll.c 和 dll.h 加入專案。
 
-    編譯主程式:
+    編譯專案，這將生成 Project1.dll (或其他您指定的名稱)。
 
-        在 Dev-C++ 中，創建一個 Console Application 專案。
+步驟 2: 編譯主程式
 
-        將 main.c 加入專案中，並編譯產生 main.exe。
+    建立一個新的 Console Application 專案。
 
-    運行準備:
+    將 main.c 加入專案。
 
-        將編譯好的 Project1.dll 檔案複製到 main.exe 所在的目錄下。
+    編譯主程式，生成 main.exe。
 
-    執行:
+步驟 3: 運行測試
 
-        運行 main.exe。您將會在控制台看到載入成功訊息，然後彈出一個訊息框，最後控制台顯示 DLL 卸載訊息。
+    將 Project1.dll 檔案複製到 main.exe 所在的目錄下（這是動態載入成功的關鍵步驟）。
 
-💡 核心概念對照
-函式/巨集	程式碼中的位置	核心用途
-__declspec(dllexport)	dll.h (藉由 BUILDING_DLL 定義)	告訴編譯器將 HelloWorld 函式公開在 DLL 外部。
-LoadLibrary("Project1.dll")	main.c	執行時載入 DLL 檔案到記憶體。
-GetProcAddress(hDLL, "HelloWorld")	main.c	通過函式名稱（字串），獲取 DLL 中該函式的執行位址。
-helloWorld()	main.c	透過函式指標間接地呼叫 DLL 中的程式碼。
-FreeLibrary(hDLL)	main.c	釋放 DLL 佔用的記憶體和其他系統資源。
-🤝 貢獻 (Contributing)
+    運行 main.exe。
 
-歡迎對此專案提出意見或改進！如果您發現任何錯誤或有任何建議，請隨時提交一個 Issue 或發送 Pull Request。
+    預期結果：
+
+        主控台輸出 "DLL loaded successfully."
+
+        彈出一個標題為 "Hi"、內容為 "Hello World from DLL!" 的訊息框。
+
+        關閉訊息框後，主控台輸出 "DLL unloaded."
+
+🤝 核心 API 說明 (Key API Functions)
+函式	說明
+LoadLibrary	載入指定的 DLL，並將其映射到調用行程的記憶體空間。
+GetProcAddress	通過函式名稱字串，獲取已載入 DLL 中函式的起始記憶體位址。
+FreeLibrary	卸載 DLL 模組，釋放相關資源。
+MessageBox	彈出一個訊息框供使用者互動。
 📄 授權 (License)
 
-此專案採用 [請填寫您的授權名稱，例如：MIT License]。詳情請參閱 LICENSE 檔案。
+此專案採用 [請在這裡填寫您的授權名稱，例如：MIT License]。
