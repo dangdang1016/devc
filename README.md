@@ -145,4 +145,4 @@ GetProcAddress(hDLL, "...")	透過函式名稱（字串），在載入的 DLL �
 FreeLibrary(hDLL)	釋放 DLL 佔用的記憶體和其他資源。
 📜 授權
 
-此專案採用 [請填寫您的授權名稱，例如：MIT License]。
+此專案依循 GNU General Public License v3.0 (GPL v3) 發布。詳情請參閱專案根目錄下的 LICENSE 文件。
