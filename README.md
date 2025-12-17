@@ -1,3 +1,10 @@
+https://www.youtube.com/watch?v=bFcjaw961CM
+
+
+
+
+
+
 🚀 Windows DLL 動態載入範例 (Dev-C++)
 
 一個使用 Dev-C++ 環境編寫的簡單 Windows DLL 專案，展示了如何使用 動態連結 (Run-time Dynamic Linking) 的方式，在執行時載入並調用 DLL 中的函式。
