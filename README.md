@@ -1,10 +1,3 @@
-https://www.youtube.com/watch?v=bFcjaw961CM
-
-
-
-
-
-
 🚀 Windows DLL 動態載入範例 (Dev-C++)
 
 一個使用 Dev-C++ 環境編寫的簡單 Windows DLL 專案，展示了如何使用 動態連結 (Run-time Dynamic Linking) 的方式，在執行時載入並調用 DLL 中的函式。
@@ -155,6 +148,20 @@ int main()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=bFcjaw961CM
 📜 授權
 
 此專案依循 GNU General Public License v3.0 (GPL v3) 發布。詳情請參閱專案根目錄下的 LICENSE 文件。
